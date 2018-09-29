@@ -1,0 +1,12 @@
+Some thoughts:
+
+-can't binarize to 0,1,2 because levels of reference genes are pre-determined (or it would be complicated to match the gene units)
+-use Seurat to determine clusters and find high variable genes in those clusters
+-Try mapping with: Seurat and DistMap and the other tool
+
+#Questions
+#what is DV
+
+-possibly: tnse clusters + 
+-contrqtive PCA since it conserves geographical location but : -python / -requires background data
+-Think of it as puzzle: find cells minimally distant in euclidean distance

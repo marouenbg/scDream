@@ -1,11 +1,7 @@
 #Packages
 library(DistMap)
 library(nnet)#needed function to compute position of max
-#library(devtools)
-#install_github("marouenbg/seurat")
-#Install my version of seurat where I fixed a few things (l15 rbind in function inside FitGeneK)
-library(Seurat)#Loading my version of Seurat
-#require(scales)#for hue palette
+library(Seurat)#trying with seurat
 
 #change working directory
 setwd("/home/marouen/dreamChallenge/data/singleCellData")
@@ -53,7 +49,7 @@ insitu.matrix = as.matrix(insitu.matrix)
 colnames(insitu.matrix) = insitu.genes
 #Reduce set of genes
 res = dim(insitu.matrix)
-indGenes=1:res[2]
+indGenes=24:res[2]
 nGenes=length(indGenes)
 insitu.matrix = insitu.matrix[,indGenes]
 
@@ -135,69 +131,20 @@ i=1
 which(mapMat[i,]==1)#162 is n1 in 24:end setting but  n3 in the 84 genes settings
 which(savemapMat[i,]==1)#134 (look for 162) is 15th on the 24:end classification
 
-##
 #Seurat stuff
-#Find and eliminate duplicate genes
-ind=which(duplicated(rownames(raw.data))==TRUE)
-raw.data=raw.data[-ind,]
+#Find duplicate genes
+ind=which(duplicated(rownames(normalized.data))==TRUE)
+normalized.data=normalized.data[-ind,]
 
-#Call Seurat and some hacks to prevent errors
-#meta.data <- data.frame(rep(1, ncol(raw.data)))
-#ident = factor(rep(1, ncol(raw.data)))
-#colnames(raw.data)=colnames(normalized.data)
-#nbt=new("seurat",raw.data=raw.data,cell.names=colnames(raw.data), meta.data = meta.data, ident=ident)
-nbt=CreateSeuratObject("seurat",raw.data=raw.data)
-#names(nbt@ident) = colnames(normalized.data)
+#Call Seurat
+nbt=new("seurat",data=normalized.data)
 
 #Scale Data
 nbt=NormalizeData(nbt)
 nbt=ScaleData(nbt)
-nbt=FindVariableGenes(nbt,mean.function = ExpMean,dispersion.function = LogVMR)
 
-#PCA
-nbt=RunPCA(nbt, pcs.compute = 40)#because there were more than 20 sig PCs, PCA on variable genes
-#my_color_palette <- CustomPalette(low = "red", high = "green")
-PCAPlot(nbt, 1, 2, pt.size = 2)#, cols.use=my_color_palette) #+ scale_color_manual(values = my_color_palette)
+nbt=FindVariableGenes(nbt,y.cutoff = 2,x.low.cutoff = 2,mean.function = ExpMean,dispersion.function = LogVMR)
 
-#Determine significant PCs
-nbt=JackStraw(nbt,num.replicate = 200, num.pc = 40, prop.freq=0.025)#should be 100
-JackStrawPlot(nbt,PCs = 1:40)
-#=>There are 24 significant PCs p<0.05
-sigPCs=24
-nbt <- ProjectPCA(nbt, do.print = FALSE,do.center=FALSE)
-genes.sig <- PCASigGenes(nbt,pcs.use = 1:sigPCs, pval.cut = 1e-2, use.full = FALSE)#this should be TRUE
+nbt=RunPCA(nbt,do.print=FALSE)
+pca.plot(nbt,1,2,pt.size = 2)
 
-#tSNE
-nbt=RunTSNE(nbt,dims.use = 1:sigPCs,max_iter=2000)
-TSNEPlot(nbt,pt.size = 1)
-
-#Clustering
-nbt=DBClustDimension(nbt,1,2,reduction.use = "tsne",G.use = 2.2,set.ident = TRUE)#DBScan
-#nbt=KClustDimension(nbt,1,2,reduction.use = "tsne",set.ident = TRUE, k.use = 10)#KNN
-nClusters=length(unique(factor(nbt@ident)))#1st cluster is un-assigned cells
-TSNEPlot(nbt,pt.size = 1)
-
-#Plot cells against each other
-par(mfrow=c(2,2))
-CellPlot(nbt,nbt@cell.names[1],nbt@cell.names[2],do.ident = FALSE)
-CellPlot(nbt,nbt@cell.names[3],nbt@cell.names[4],do.ident = FALSE)
-
-#Add in situ genes
-nbt@spatial@insitu.matrix =as.data.frame(insitu.matrix)
-lasso.genes.use=unique(c(genes.sig,nbt@var.genes))
-
-#Impute gene expression
-nbt <- AddImputedScore(nbt, genes.use=lasso.genes.use,genes.fit=insitu.genes, do.print=FALSE, s.use=40, gram=FALSE)
-
-#Continue with Seurat mapping
-for(i in rev(insitu.genes)){
-  nbt=FitGeneK(nbt,i,do.plot=FALSE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,i]),num.iter = 1)
-} 
-
-#show an example mixture model
-par(mfrow=c(2,2))
-nbt_temp=FitGeneK(nbt,"zfh1",do.plot=TRUE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,"zfh1"]))
-nbt_temp=FitGeneK(nbt,"zen2",do.plot=TRUE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,"zen2"]))
-nbt_temp=FitGeneK(nbt,"twi",do.plot=TRUE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,"twi"]))
-nbt_temp=FitGeneK(nbt,"tsh",do.plot=TRUE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,"tsh"]))
-  

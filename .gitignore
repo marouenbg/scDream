@@ -2,3 +2,8 @@
 *.mp4
 *.txt
 *.csv
+*.Rhistory
+*.zip
+*.Robj
+*.xlsx
+/data
