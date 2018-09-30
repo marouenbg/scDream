@@ -57,86 +57,7 @@ indGenes=1:res[2]
 nGenes=length(indGenes)
 insitu.matrix = insitu.matrix[,indGenes]
 
-#Create unique bins
-dimInSitu=dim(insitu.matrix)
-uniqueBins=0
-count=0
-nonUniqueVec=rep(0,dimInSitu[1])
-for (i in 1:(dimInSitu[1])){
-  if(nonUniqueVec[i]!=0){
-    next
-  }else{
-    count=count+1
-    nonUniqueVec[i]=count
-    if (i==(dimInSitu[1])){
-     break 
-    }
-  }
-  for(j in (i+1):dimInSitu[1]){
-    if(all(insitu.matrix[i,]==insitu.matrix[j,]) & nonUniqueVec[j]==0){
-      nonUniqueVec[j]=count
-    }
-  }
-}
-table(nonUniqueVec)
-sum(table(nonUniqueVec))
-tail(sort(table(nonUniqueVec)))
-
-#Build binary correlation matrix
-nNewBins=max(nonUniqueVec)
-corrMat=matrix(0L, nrow = dimInSitu[1], ncol = nNewBins)# corrMat is old bins by new bins
-for (i in 1:nNewBins){
-  corrMat[which(nonUniqueVec == i),i]=1
-}
-sum(table(nonUniqueVec)==1, na.rm=TRUE)#Number of new bins with uniquely mapped original bin
-
-#Build new reference with super bins
-insitu.matrix.aggregated = matrix(0L, nrow = nNewBins, ncol = nGenes)
-for(i in 1:nNewBins){
-  #correspond new bin to old bin
-  j=which(corrMat[,i]==1)[1]#take the first correspondance as they are all equal
-  insitu.matrix.aggregated[i,]=insitu.matrix[j,]
-}
-colnames(insitu.matrix.aggregated) = colnames(insitu.matrix)
-
-#Geometry
-geometry = read.csv("geometry.txt",sep = " ")
-colnames(geometry) = c("x","y","z")
-
-##Run DistMap
-dm = new("DistMap",
-         raw.data=raw.data,
-         data=normalized.data,
-         insitu.matrix=insitu.matrix.aggregated)
-         #geometry=as.matrix(geometry))
-dm <- binarizeSingleCellData(dm, seq(0.15, 0.5, 0.01))
-
-#write.table(dm@binarized.data,file = "binarizedData_distMap.csv",sep = ",",row.names = T,col.names = T)
-dm <- mapCells(dm)
-
-#Map cells back using max MCC
-dimMcc=dim(dm@mcc.scores)
-mapMat =  matrix(0L, nrow = dimMcc[2], ncol = dimInSitu[1])#cells by bins
-for(i in 1:dimMcc[2]){#loop through cells
-  x=which.max(dm@mcc.scores[,i])#takes first of ties
-  #x=which(dm@mcc.scores[,i] == max(dm@mcc.scores[,i]))#take all maxes
-  #y=vector()
-  #for(j in 1:length(x)){
-  #  y=append(y,which(corrMat[,x[j]]==1))
-  #}
-  y=which(corrMat[,x]==1)
-  mapMat[i,y]=1#put back y and insitu aggregated and number of genes
-}
-
-##
-#savemapMat=mapMat #savemat is the original MCC matrix
-#saveMcc=dm@mcc.scores
-i=1
-which(mapMat[i,]==1)#162 is n1 in 24:end setting but  n3 in the 84 genes settings
-which(savemapMat[i,]==1)#134 (look for 162) is 15th on the 24:end classification
-
-##
-#Seurat stuff
+#Call Seurat 
 #Find and eliminate duplicate genes
 ind=which(duplicated(rownames(raw.data))==TRUE)
 raw.data=raw.data[-ind,]
@@ -160,17 +81,17 @@ nbt=ScaleData(nbt)
 nbt=FindVariableGenes(nbt,mean.function = ExpMean,dispersion.function = LogVMR)
 
 #PCA
-nbt=RunPCA(nbt, pcs.compute = 40)#because there were more than 20 sig PCs, PCA on variable genes
+nbt=RunPCA(nbt, do.print=FALSE, pcs.compute = 40)#because there were more than 20 sig PCs, PCA on variable genes
 #my_color_palette <- CustomPalette(low = "red", high = "green")
 PCAPlot(nbt, 1, 2, pt.size = 2)#, cols.use=my_color_palette) #+ scale_color_manual(values = my_color_palette)
 
 #Determine significant PCs
-nbt=JackStraw(nbt,num.replicate = 200, num.pc = 40, prop.freq=0.025)#should be 100
+nbt=JackStraw(nbt,num.replicate = 200, num.pc = 40, prop.freq=0.025)#should be 1000
 JackStrawPlot(nbt,PCs = 1:40)
 #=>There are 24 significant PCs p<0.05
 sigPCs=24
 nbt <- ProjectPCA(nbt, do.print = FALSE,do.center=FALSE)
-genes.sig <- PCASigGenes(nbt,pcs.use = 1:sigPCs, pval.cut = 1e-2, use.full = FALSE)#this should be TRUE
+genes.sig <- PCASigGenes(nbt,pcs.use = 1:sigPCs, pval.cut = 1e-2, use.full = FALSE)#this should be TRUE but documentation says it is ok
 
 #tSNE
 nbt=RunTSNE(nbt,dims.use = 1:sigPCs,max_iter=2000)
@@ -212,4 +133,14 @@ for(i in rev(insitu.genes)){
 #Map cells
 nbt <- InitialMapping(nbt)
 
-#format of insitu n original seurat
+#Refine mapping
+num.pc=3; num.genes=6
+genes.use=PCTopGenes(nbt,pc.use = 1:num.pc,num.genes = num.genes,use.full = TRUE,do.balanced = TRUE)
+
+#impute values for those genes
+new.imputed=genes.use[!genes.use%in%rownames(nbt@imputed)]
+lasso.genes.use=unique(c(nbt@var.genes,PCASigGenes(nbt,pcs.use = c(1,2,3), pval.cut = 1e-2, use.full = FALSE)))#shoudl be TRUE
+nbt <- AddImputedScore(nbt, genes.use=lasso.genes.use,genes.fit=new.imputed, do.print=FALSE, s.use=40, gram=FALSE)
+
+#Actual refinment
+nbt <- RefinedMapping(nbt,genes.use)
