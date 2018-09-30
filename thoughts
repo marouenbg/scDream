@@ -10,3 +10,8 @@ Some thoughts:
 -possibly: tnse clusters + 
 -contrqtive PCA since it conserves geographical location but : -python / -requires background data
 -Think of it as puzzle: find cells minimally distant in euclidean distance
+
+
+Fixes to Seurat:
+-tanspose in rbind FitGeneK
+-replace grep escape character in subset column in FitGeneK

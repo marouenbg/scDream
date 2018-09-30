@@ -144,7 +144,7 @@ raw.data=raw.data[-ind,]
 #Call Seurat and some hacks to prevent errors
 #meta.data <- data.frame(rep(1, ncol(raw.data)))
 #ident = factor(rep(1, ncol(raw.data)))
-#colnames(raw.data)=colnames(normalized.data)
+colnames(raw.data)=colnames(normalized.data)
 #nbt=new("seurat",raw.data=raw.data,cell.names=colnames(raw.data), meta.data = meta.data, ident=ident)
 nbt=CreateSeuratObject("seurat",raw.data=raw.data)
 #names(nbt@ident) = colnames(normalized.data)
@@ -183,6 +183,10 @@ CellPlot(nbt,nbt@cell.names[1],nbt@cell.names[2],do.ident = FALSE)
 CellPlot(nbt,nbt@cell.names[3],nbt@cell.names[4],do.ident = FALSE)
 
 #Add in situ genes
+#Rename ambiguous genes
+#colnames(insitu.matrix)[44]="Debugh"
+#colnames(insitu.matrix)[24]="DebugD"
+insitu.genes=colnames(insitu.matrix)
 nbt@spatial@insitu.matrix =as.data.frame(insitu.matrix)
 lasso.genes.use=unique(c(genes.sig,nbt@var.genes))
 
@@ -190,14 +194,28 @@ lasso.genes.use=unique(c(genes.sig,nbt@var.genes))
 nbt <- AddImputedScore(nbt, genes.use=lasso.genes.use,genes.fit=insitu.genes, do.print=FALSE, s.use=40, gram=FALSE)
 
 #Continue with Seurat mapping
+#i="rho" i="Blimp-1"
 for(i in rev(insitu.genes)){
+  #print(i)
+  #print(length(nbt@spatial@mix.probs))
   nbt=FitGeneK(nbt,i,do.plot=FALSE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,i]),num.iter = 1)
+  #print("rho.0.post" %in% colnames(nbt@spatial@mix.probs))
 } 
 
 #show an example mixture model
-par(mfrow=c(2,2))
-nbt_temp=FitGeneK(nbt,"zfh1",do.plot=TRUE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,"zfh1"]))
-nbt_temp=FitGeneK(nbt,"zen2",do.plot=TRUE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,"zen2"]))
-nbt_temp=FitGeneK(nbt,"twi",do.plot=TRUE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,"twi"]))
-nbt_temp=FitGeneK(nbt,"tsh",do.plot=TRUE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,"tsh"]))
+#par(mfrow=c(2,2))
+#nbt_temp=FitGeneK(nbt,"zfh1",do.plot=TRUE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,"zfh1"]))
+#nbt_temp=FitGeneK(nbt,"zen2",do.plot=TRUE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,"zen2"]))
+#nbt_temp=FitGeneK(nbt,"twi",do.plot=TRUE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,"twi"]))
+#nbt_temp=FitGeneK(nbt,"tsh",do.plot=TRUE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,"tsh"]))
+
+#Map cells
+nbt <- InitialMapping(nbt)
+
+#format of insitu n original seurat
+#library(XLConnect)
+#wb <- loadWorkbook("/home/marouen/dreamChallenge/data/SeuratTuto/Spatial_ReferenceMap.xlsx", create=FALSE); 
+#insitu.genes2 <- getSheets(wb)
+#insitu.matrix2 <- data.frame(sapply(1:length(insitu.genes2),function(x)as.numeric(as.matrix(wb[x][2:9,2:9]))))
+#insitu.genes2 <- toupper(insitu.genes2); colnames(insitu.matrix2) <- (insitu.genes2)
   
