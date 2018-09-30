@@ -3,6 +3,7 @@ Some thoughts:
 -can't binarize to 0,1,2 because levels of reference genes are pre-determined (or it would be complicated to match the gene units)
 -use Seurat to determine clusters and find high variable genes in those clusters
 -Try mapping with: Seurat and DistMap and the other tool
+-Try with Seurat but with binarization of DistMap
 
 #Questions
 #what is DV
@@ -13,5 +14,5 @@ Some thoughts:
 
 
 Fixes to Seurat:
--tanspose in rbind FitGeneK
+-tanspose in rbind FitGeneK (Could this be fixed by trqnspoing insitu.matrix ? to have it similar to raw.matrix as genes per cells)
 -replace grep escape character in subset column in FitGeneK

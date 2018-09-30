@@ -140,11 +140,16 @@ which(savemapMat[i,]==1)#134 (look for 162) is 15th on the 24:end classification
 #Find and eliminate duplicate genes
 ind=which(duplicated(rownames(raw.data))==TRUE)
 raw.data=raw.data[-ind,]
+#Fix ambiguous genes for regex
+rownames(raw.data)[which(rownames(raw.data)=="Blimp-1")]="DebugBlimp1"
+rownames(raw.data)[which(rownames(raw.data)=="E(spl)m5-HLH")]="DebugEsplm5HLH"
+colnames(insitu.matrix)[which(colnames(insitu.matrix)=="Blimp-1")]="DebugBlimp1"
+colnames(insitu.matrix)[which(colnames(insitu.matrix)=="E(spl)m5-HLH")]="DebugEsplm5HLH"
 
 #Call Seurat and some hacks to prevent errors
 #meta.data <- data.frame(rep(1, ncol(raw.data)))
 #ident = factor(rep(1, ncol(raw.data)))
-colnames(raw.data)=colnames(normalized.data)
+colnames(raw.data)=colnames(normalized.data)#Cell names
 #nbt=new("seurat",raw.data=raw.data,cell.names=colnames(raw.data), meta.data = meta.data, ident=ident)
 nbt=CreateSeuratObject("seurat",raw.data=raw.data)
 #names(nbt@ident) = colnames(normalized.data)
@@ -183,9 +188,7 @@ CellPlot(nbt,nbt@cell.names[1],nbt@cell.names[2],do.ident = FALSE)
 CellPlot(nbt,nbt@cell.names[3],nbt@cell.names[4],do.ident = FALSE)
 
 #Add in situ genes
-#Rename ambiguous genes
-#colnames(insitu.matrix)[44]="Debugh"
-#colnames(insitu.matrix)[24]="DebugD"
+#Rename ambiguous genes to avoid problems at regex later
 insitu.genes=colnames(insitu.matrix)
 nbt@spatial@insitu.matrix =as.data.frame(insitu.matrix)
 lasso.genes.use=unique(c(genes.sig,nbt@var.genes))
@@ -196,10 +199,7 @@ nbt <- AddImputedScore(nbt, genes.use=lasso.genes.use,genes.fit=insitu.genes, do
 #Continue with Seurat mapping
 #i="rho" i="Blimp-1"
 for(i in rev(insitu.genes)){
-  #print(i)
-  #print(length(nbt@spatial@mix.probs))
   nbt=FitGeneK(nbt,i,do.plot=FALSE,do.k = 2,start.pct=mean(nbt@spatial@insitu.matrix[,i]),num.iter = 1)
-  #print("rho.0.post" %in% colnames(nbt@spatial@mix.probs))
 } 
 
 #show an example mixture model
@@ -213,9 +213,3 @@ for(i in rev(insitu.genes)){
 nbt <- InitialMapping(nbt)
 
 #format of insitu n original seurat
-#library(XLConnect)
-#wb <- loadWorkbook("/home/marouen/dreamChallenge/data/SeuratTuto/Spatial_ReferenceMap.xlsx", create=FALSE); 
-#insitu.genes2 <- getSheets(wb)
-#insitu.matrix2 <- data.frame(sapply(1:length(insitu.genes2),function(x)as.numeric(as.matrix(wb[x][2:9,2:9]))))
-#insitu.genes2 <- toupper(insitu.genes2); colnames(insitu.matrix2) <- (insitu.genes2)
-  
