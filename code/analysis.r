@@ -57,6 +57,10 @@ indGenes=1:res[2]
 nGenes=length(indGenes)
 insitu.matrix = insitu.matrix[,indGenes]
 
+#Retrieve cell coordinates
+geometry = read.csv("geometry.txt",sep = " ")
+colnames(geometry) = c("x","y","z")
+
 #Call Seurat 
 #Find and eliminate duplicate genes
 ind=which(duplicated(rownames(raw.data))==TRUE)
@@ -139,8 +143,22 @@ genes.use=PCTopGenes(nbt,pc.use = 1:num.pc,num.genes = num.genes,use.full = TRUE
 
 #impute values for those genes
 new.imputed=genes.use[!genes.use%in%rownames(nbt@imputed)]
-lasso.genes.use=unique(c(nbt@var.genes,PCASigGenes(nbt,pcs.use = c(1,2,3), pval.cut = 1e-2, use.full = FALSE)))#shoudl be TRUE
+lasso.genes.use=unique(c(nbt@var.genes,PCASigGenes(nbt,pcs.use = c(1,2,3), pval.cut = 1e-2, use.full = FALSE)))
+#use.full should be TRUE but it throws error, the documentation says FALSE is ok
 nbt <- AddImputedScore(nbt, genes.use=lasso.genes.use,genes.fit=new.imputed, do.print=FALSE, s.use=40, gram=FALSE)
 
 #Actual refinment
 nbt <- RefinedMapping(nbt,genes.use)
+
+
+library("car")
+library("rgl")
+#scatter3d(geometry[,1],geometry[,2],geometry[,3] , surface=FALSE, labels = rownames(geometry), id.n=nrow(geometry))
+#open3d()
+#ind=1:200
+#text3d(geometry[ind,1],geometry[ind,2],geometry[ind,3], text=rownames(geometry)[ind])
+plot(geometry[,1],geometry[,3])
+
+plot3d(geometry[,1],geometry[,2],geometry[,3])
+text3d(geometry[,1],geometry[,2],geometry[,3],rownames(geometry))
+points3d(geometry[,1],geometry[,2],geometry[,3], size = 5)
