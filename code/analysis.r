@@ -6,6 +6,7 @@ library(nnet)#needed function to compute position of max
 #Install my version of seurat where I fixed a few things (l15 rbind in function inside FitGeneK)
 library(Seurat)#Loading my version of Seurat
 #require(scales)#for hue palette
+#library(XLConnect) #for reading xls
 
 #change working directory
 setwd("/home/marouen/dreamChallenge/data/singleCellData")
@@ -62,9 +63,17 @@ geometry = read.csv("geometry.txt",sep = " ")
 colnames(geometry) = c("x","y","z")
 
 #Call Seurat 
-#Find and eliminate duplicate genes
+#Found duplciate gene betaCOP at row index 386, 387 but they have different column values
+#meaning that they are actually different genes but were mislabled
+#rename betaCOP
+#ind=which(duplicated(rownames(raw.data))==TRUE)
+#rownames(raw.data)[ind]="DebugbetaCOP"
+
+#eliminate duplicate gene
 ind=which(duplicated(rownames(raw.data))==TRUE)
 raw.data=raw.data[-ind,]
+#confirm that values are differnet
+#all(raw.data[,386]==raw.data[,387])
 #Fix ambiguous genes for regex
 rownames(raw.data)[which(rownames(raw.data)=="Blimp-1")]="DebugBlimp1"
 rownames(raw.data)[which(rownames(raw.data)=="E(spl)m5-HLH")]="DebugEsplm5HLH"
@@ -150,15 +159,26 @@ nbt <- AddImputedScore(nbt, genes.use=lasso.genes.use,genes.fit=new.imputed, do.
 #Actual refinment
 nbt <- RefinedMapping(nbt,genes.use)
 
+#check if there are in situ duplicates
+wb <- loadWorkbook("~/dreamChallenge/data/SeuratTuto/Spatial_ReferenceMap.xlsx", create=FALSE); insitu.genes <- getSheets(wb)
+insitu.matrix <- data.frame(sapply(1:length(insitu.genes),function(x)as.numeric(as.matrix(wb[x][2:9,2:9]))))
+insitu.genes <- toupper(insitu.genes); colnames(insitu.matrix) <- (insitu.genes)
 
-library("car")
-library("rgl")
+for(i in 1:(dim(insitu.matrix)[1]-1)){
+  print(c("i is",i))
+  for(j in (i+1):dim(insitu.matrix)[1]){
+    if(all(insitu.matrix[i,]==insitu.matrix[j,])){
+      print(c("found!",j))
+    }
+  }
+}
+#library("car")
+#library("rgl")
 #scatter3d(geometry[,1],geometry[,2],geometry[,3] , surface=FALSE, labels = rownames(geometry), id.n=nrow(geometry))
 #open3d()
 #ind=1:200
 #text3d(geometry[ind,1],geometry[ind,2],geometry[ind,3], text=rownames(geometry)[ind])
-plot(geometry[,1],geometry[,3])
-
-plot3d(geometry[,1],geometry[,2],geometry[,3])
-text3d(geometry[,1],geometry[,2],geometry[,3],rownames(geometry))
-points3d(geometry[,1],geometry[,2],geometry[,3], size = 5)
+#plot(geometry[,1],geometry[,3])
+#plot3d(geometry[,1],geometry[,2],geometry[,3])
+#text3d(geometry[,1],geometry[,2],geometry[,3],rownames(geometry))
+#points3d(geometry[,1],geometry[,2],geometry[,3], size = 5)
