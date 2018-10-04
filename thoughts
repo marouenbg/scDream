@@ -1,18 +1,24 @@
 Some thoughts:
 
--can't binarize to 0,1,2 because levels of reference genes are pre-determined (or it would be complicated to match the gene units)
+OK -can't binarize to 0,1,2 because levels of reference genes are pre-determined (or it would be complicated to match the gene units)
 -use Seurat to determine clusters and find high variable genes in those clusters
 -Try mapping with: Seurat and DistMap and the other tool
--Try with Seurat but with binarization of DistMap
 
 #Questions
-#what is DV
+What is DV? -> y coordinate
 
--possibly: tnse clusters + 
--contrqtive PCA since it conserves geographical location but : -python / -requires background data
+NO -possibly: tnse clusters + 
+NO - contrastive PCA since it conserves geographical location but : -python / -requires background data
 -Think of it as puzzle: find cells minimally distant in euclidean distance
 
 
 Fixes to Seurat:
 -tanspose in rbind FitGeneK (Could this be fixed by trqnspoing insitu.matrix ? to have it similar to raw.matrix as genes per cells)
 -replace grep escape character in subset column in FitGeneK
+
+#Try with Seurat but with binarization of DistMap
+#visually choose number of variable genes
+#project shape into 76*40 rectangle
+#try with ngenes =20,40,60
+#delete 3040 cell
+#look at other tutorials

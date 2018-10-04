@@ -1,5 +1,6 @@
 #Packages
-library(DistMap)
+library(DistMap)#for ground truth
+library(useful)#for corner
 library(nnet)#needed function to compute position of max
 #library(devtools)
 #install_github("marouenbg/seurat")
@@ -62,6 +63,21 @@ insitu.matrix = insitu.matrix[,indGenes]
 geometry = read.csv("geometry.txt",sep = " ")
 colnames(geometry) = c("x","y","z")
 
+#Distmap compute ground truth
+dm = new("DistMap",
+         raw.data=raw.data,
+         data=normalized.data,
+         insitu.matrix=insitu.matrix,
+         geometry=as.matrix(geometry))
+dm <- binarizeSingleCellData(dm, seq(0.15, 0.5, 0.01))
+dm <- mapCells(dm)
+#Mcc-ordered position matrix descending
+#posMat is the ground truth matrix
+posMat = matrix(0L, nrow = dim(insitu.matrix)[1], ncol = dim(raw.data)[2])
+for(i in 1:dim(raw.data)[2]){
+  posMat[,i]=order(-dm@mcc.scores[,i])#highest MCC is more likely
+}
+
 #Call Seurat 
 #Found duplciate gene betaCOP at row index 386, 387 
 #but they have different column values
@@ -80,11 +96,18 @@ rownames(raw.data)[which(rownames(raw.data)=="E(spl)m5-HLH")]="DebugEsplm5HLH"
 colnames(insitu.matrix)[which(colnames(insitu.matrix)=="Blimp-1")]="DebugBlimp1"
 colnames(insitu.matrix)[which(colnames(insitu.matrix)=="E(spl)m5-HLH")]="DebugEsplm5HLH"
 
+#conversion table of points between the actual repersentation
+#and a projection compatible with seurat where the first cell
+#is in the top left corner
+convTable  = matrix(0L, nrow = dim(geometry)[1]+1, ncol = 2)
+convTable[,1]=1:3040 #first column is new system
+convTable[1:3039,2]=order(-geometry[,3],geometry[,1])#sort by decreasing 3, and increasing 1
+convTable[3040,2]=3040
+
 #Call Seurat and some hacks to prevent errors
 #meta.data <- data.frame(rep(1, ncol(raw.data)))
 #ident = factor(rep(1, ncol(raw.data)))
 colnames(raw.data)=colnames(normalized.data)#Cell names
-#nbt=new("seurat",raw.data=raw.data,cell.names=colnames(raw.data), meta.data = meta.data, ident=ident)
 nbt=CreateSeuratObject("seurat",raw.data=raw.data)
 #names(nbt@ident) = colnames(normalized.data)
 
@@ -126,6 +149,8 @@ CellPlot(nbt,nbt@cell.names[3],nbt@cell.names[4],do.ident = FALSE)
 #I added 1 empty location to make 3039+1=76*40 or 80*38 or 95*32 (Leading dimension is 76= ncols)
 insitu.matrix=rbind(insitu.matrix,integer(dim(insitu.matrix)[2]))
 insitu.genes=colnames(insitu.matrix)
+#reorder bins
+insitu.matrix=insitu.matrix[convTable[,2],]
 nbt@spatial@insitu.matrix =as.data.frame(insitu.matrix)
 lasso.genes.use=unique(c(genes.sig,nbt@var.genes))
 
@@ -160,3 +185,22 @@ nbt <- AddImputedScore(nbt, genes.use=lasso.genes.use,genes.fit=new.imputed, do.
 
 #Actual refinment
 nbt <- RefinedMapping(nbt,genes.use)
+
+#identify positions
+corner(nbt@spatial@final.prob)
+
+#calculate centroids for each cell (we do not need this step because here 1bin=1cell)
+nbt.centroids=GetCentroids(nbt); colnames(nbt.centroids)=c("bin.tier","bin.dv")
+corner(nbt.centroids)
+
+#final mapping and convert back to original coordinates
+mapMat = matrix(0L, nrow = dim(nbt@spatial@final.prob)[1], ncol = dim(raw.data)[2])
+for(i in 1:dim(raw.data)[2]){
+  mapMat[,i]=convTable[1,order(nbt@spatial@final.prob[,i])]#p values are from the smallest
+}
+
+#remove 3040
+
+#write accuracy test
+
+
