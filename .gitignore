@@ -1,7 +1,6 @@
 *.pdf
 *.mp4
 *.txt
-*.csv
 *.Rhistory
 *.zip
 *.Robj

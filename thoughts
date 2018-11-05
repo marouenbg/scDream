@@ -16,9 +16,70 @@ Fixes to Seurat:
 -tanspose in rbind FitGeneK (Could this be fixed by trqnspoing insitu.matrix ? to have it similar to raw.matrix as genes per cells)
 -replace grep escape character in subset column in FitGeneK
 
-#Try with Seurat but with binarization of DistMap
+Tries:
 #visually choose number of variable genes
+#read satija paper
+#vary s.use in imputatation
+#n genes in refine mapping
 #project shape into 76*40 rectangle
 #try with ngenes =20,40,60
-#delete 3040 cell
+#double check sig pcs
+#try 95*32
 #look at other tutorials
+#Try with Seurat but with binarization of DistMap
+-> no because I thought it was manual mapping
+#Refined mapping with projection1
+-> score is quite poor
+
+Results:
+1-Initial mapping - shape 76*40 - x.low.cutoff = 0.1  - Initial   - bin = Seurat  : perc 0.00308404 avDistance 137.986
+2-Refined mapping - shape 76*40 - x.low.cutoff = 0.1  - refine3,6 - bin = Seurat  : perc 0.00154202 avDistance 163.71
+3-Initial mapping - shape 76*40 - x.low.cutoff = 0.01 - Initial   - bin = Seurat  : perc 0.00308404 avDistance 138.347
+4-Refined mapping - shape 76*40 - x.low.cutoff = 0.01 - refine3,6 - bin = Seurat  : perc 0.00616808 avDistance 166.1043
+5-Refined mapping - shape 76*40 - x.low.cutoff = 0.1  - refine4,8 - bin = Seurat  : perc 0.00231303 avDistance 162.6335
+6-Refined mapping - shape 76*40 - x.low.cutoff = 0.01 - refine4,8 - bin = Seurat  : perc 0.01079414 avDistance 165.5422
+7-Refined mapping - shape 76*40 - x.low.cutoff = 0.1  - refine2,4 - bin = Seurat  : perc 0.00077101 avDistance 165.0008
+8-Initial mapping - shape 76*40 - x.low.cutoff = 0.1  - Initial   - bin = Distmap : perc 0.00231303 avDistance 140.3986
+9-Refined mapping - shape 76*40 - x.low.cutoff = 0.1  - refine2,4 - bin = Distmap : perc 0.00308404 avDistance 152.0673
+**Original mapping
+OK10-Refined mapping -**shape 76*40 - x.low.cutoff = 0.1  - Initial  - bin = Distmap: perc 0          avDistance 172.6343
+OK11-Refined mapping -**shape 76*40 - x.low.cutoff = 0.1  - refine2,4- bin = Distmap: perc 0          avDistance 142.6303
+OK12-Initial mapping -  shape 40*76 - x.low.cutoff = 0.1  - Initial  - bin = Distmap: perc 0.00231303 avDistance 140.3986
+OK13-Refined mapping -  shape 40*76 - x.low.cutoff = 0.1  - refine2,4- bin = Distmap: perc 0          avDistance 163.9221
+OK14-Initial mapping -  shape 40*76 - x.low.cutoff = 0.1  - Initial  - bin = Seurat : perc 0.00308404 avDistance 137.986
+OK15-Refined mapping -  shape 40*76 - x.low.cutoff = 0.1  - refine2,4- bin = Seurat : perc 0.01156515 avDistance 167.4147
+OK16-Initial mapping -  shape 80*38 - x.low.cutoff = 0.1  - Initial  - bin = Seurat : perc 0.00308404 avDistance 137.986
+OK17-Refined mapping -  shape 80*38 - x.low.cutoff = 0.1  - refine2,4- bin = Seurat : perc 0.00385505 avDistance 172.7521
+OK18-Initial mapping -  shape 80*38 - x.low.cutoff = 0.1  - Initial  - bin = Distmap: perc 0.00231303 avDistance 140.3986
+OK19-Refined mapping -  shape 80*38 - x.low.cutoff = 0.1  - refine2,4- bin = Distmap: perc 0.00154202 avDistance 163.9205
+OK20- 1 + varGenes=dispersion     + ngenes=20 perc 0.00154202  avDistance 123.1461
+OK21- 2 + varGenes=dispersion     + ngenes=20 perc 0.00077101  avDistance 166.6629
+OK22- 1 + varGenes=geneMean       + ngenes=20 perc 0.00231303  avDistance NA
+OK23- 2 + varGenes=geneMean       + ngenes=20 perc 0.00308404  avDistance 189.4284
+
+OK24- 1 + varGenes=dispersion     + ngenes=40 perc 0.00154202  avDistance 133.6976
+OK25- 2 + varGenes=dispersion     + ngenes=40 perc   avDistance 
+OK26- 1 + varGenes=geneMean       + ngenes=40 perc   avDistance 
+OK27- 2 + varGenes=geneMean       + ngenes=40 perc   avDistance 
+
+OK28- 1 + varGenes=dispersion     + ngenes=60 perc   avDistance 
+OK29- 2 + varGenes=dispersion     + ngenes=60 perc   avDistance 
+OK30- 1 + varGenes=geneMean       + ngenes=60 perc   avDistance 
+OK31- 2 + varGenes=geneMean       + ngenes=60 perc   avDistance 
+
+
+OK32- 1 + varGenes=dispersion     + ngenes=20 perc   avDistance 
+OK33- 2 + varGenes=dispersion     + ngenes=20 perc   avDistance 
+OK34- 1 + varGenes=geneMean       + ngenes=20 perc   avDistance 
+OK35- 2 + varGenes=geneMean       + ngenes=20 perc   avDistance 
+
+OK36- 1 + varGenes=dispersion     + ngenes=40 perc   avDistance 
+OK37- 2 + varGenes=dispersion     + ngenes=40 perc   avDistance 
+OK38- 1 + varGenes=geneMean       + ngenes=40 perc   avDistance 
+OK39- 2 + varGenes=geneMean       + ngenes=40 perc   avDistance 
+
+OK40- 1 + varGenes=dispersion     + ngenes=60 perc   avDistance 
+OK41- 2 + varGenes=dispersion     + ngenes=60 perc   avDistance 
+OK42- 1 + varGenes=geneMean       + ngenes=60 perc   avDistance 
+OK43- 2 + varGenes=geneMean       + ngenes=60 perc   avDistance 
+
