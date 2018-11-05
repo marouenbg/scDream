@@ -68,18 +68,18 @@ OK30- 1 + varGenes=geneMean       + ngenes=60 perc   avDistance
 OK31- 2 + varGenes=geneMean       + ngenes=60 perc   avDistance 
 
 
-OK32- 1 + varGenes=dispersion     + ngenes=20 perc   avDistance 
-OK33- 2 + varGenes=dispersion     + ngenes=20 perc   avDistance 
-OK34- 1 + varGenes=geneMean       + ngenes=20 perc   avDistance 
-OK35- 2 + varGenes=geneMean       + ngenes=20 perc   avDistance 
+OK32- 8 + varGenes=dispersion     + ngenes=20 perc   avDistance 
+OK33- 9 + varGenes=dispersion     + ngenes=20 perc   avDistance 
+OK34- 8 + varGenes=geneMean       + ngenes=20 perc   avDistance 
+OK35- 9 + varGenes=geneMean       + ngenes=20 perc   avDistance 
 
-OK36- 1 + varGenes=dispersion     + ngenes=40 perc   avDistance 
-OK37- 2 + varGenes=dispersion     + ngenes=40 perc   avDistance 
-OK38- 1 + varGenes=geneMean       + ngenes=40 perc   avDistance 
-OK39- 2 + varGenes=geneMean       + ngenes=40 perc   avDistance 
+OK36- 8 + varGenes=dispersion     + ngenes=40 perc   avDistance 
+OK37- 9 + varGenes=dispersion     + ngenes=40 perc   avDistance 
+OK38- 8 + varGenes=geneMean       + ngenes=40 perc   avDistance 
+OK39- 9 + varGenes=geneMean       + ngenes=40 perc   avDistance 
 
-OK40- 1 + varGenes=dispersion     + ngenes=60 perc   avDistance 
-OK41- 2 + varGenes=dispersion     + ngenes=60 perc   avDistance 
-OK42- 1 + varGenes=geneMean       + ngenes=60 perc   avDistance 
-OK43- 2 + varGenes=geneMean       + ngenes=60 perc   avDistance 
+OK40- 8 + varGenes=dispersion     + ngenes=60 perc   avDistance 
+OK41- 9 + varGenes=dispersion     + ngenes=60 perc   avDistance 
+OK42- 8 + varGenes=geneMean       + ngenes=60 perc   avDistance 
+OK43- 9 + varGenes=geneMean       + ngenes=60 perc   avDistance 
 
