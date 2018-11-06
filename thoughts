@@ -60,7 +60,7 @@ OK23- 2 + varGenes=geneMean       + ngenes=20 perc 0.00308404  avDistance 189.42
 OK24- 1 + varGenes=dispersion     + ngenes=40 perc 0.00154202  avDistance 133.6976
 OK25- 2 + varGenes=dispersion     + ngenes=40 perc 0.00231303  avDistance 147.0048
 OK26- 1 + varGenes=geneMean       + ngenes=40 perc 0.00385505  avDistance 141.831
-OK27- 2 + varGenes=geneMean       + ngenes=40 perc   avDistance 
+OK27- 2 + varGenes=geneMean       + ngenes=40 perc -   avDistance - 
 
 OK28- 1 + varGenes=dispersion     + ngenes=60 perc   avDistance 
 OK29- 2 + varGenes=dispersion     + ngenes=60 perc   avDistance 
