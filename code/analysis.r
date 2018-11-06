@@ -45,7 +45,7 @@ mapping='projection'
 binary='seurat'
 
 #change working directory
-setwd("/home/marouen/challenges/dreamChallenge/data/singleCellData")
+setwd("../data/singleCellData")
 
 ##load data
 #Raw data
@@ -78,7 +78,7 @@ rownames(normalized.data) = normalized.data.genes
 stopifnot(all(normalized.data.genes == raw.data.genes))
 
 #In situ
-setwd('../refDB')
+setwd("../refDB")
 insitu.matrix = read.table("binarized_bdtnp.csv", sep = ",",header = T)
 insitu.genes_orig <- colnames(insitu.matrix)
 missingGenes = insitu.genes_orig[which(!insitu.genes_orig %in% normalized.data.genes)]
