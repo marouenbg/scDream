@@ -16,7 +16,7 @@ accuracyTest <- function(posMat,geometry,nbt,convTable,raw.data,numberGenes,mapp
     mapMat[,i]=convTable[order(nbt@spatial@final.prob[,i]),1]#p values are from the smallest
   }
   
-  #remove 3040 vv
+  #remove 3040 vv #remove 3040 from matrix (little implication)
   mapMat = mapMat[-3040,]
   
   #write accuracy test
@@ -252,3 +252,6 @@ for(numberGenes in c(20,40,60)){
     print(resultsAfterRefine)
   }
 }
+
+
+
