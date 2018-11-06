@@ -57,34 +57,34 @@ OK21- 2 + varGenes=dispersion     + ngenes=20 perc 0.00077101  avDistance 166.66
 OK22- 1 + varGenes=geneMean       + ngenes=20 perc 0.00231303  avDistance NA
 OK23- 2 + varGenes=geneMean       + ngenes=20 perc 0.00308404  avDistance 189.4284
 
-OK24- 1 + varGenes=dispersion     + ngenes=40 perc 0.00154202  avDistance 133.6976
-OK25- 2 + varGenes=dispersion     + ngenes=40 perc 0.00231303  avDistance 147.0048
+OK24- 1 + varGenes=dispersion     + ngenes=40 perc 0.00154202  avDistance 133.6976  /2 0.00154202    133.4235
+OK25- 2 + varGenes=dispersion     + ngenes=40 perc 0.00231303  avDistance 147.0048  /2  0.00077101   183.6982
 OK26- 1 + varGenes=geneMean       + ngenes=40 perc 0.00385505  avDistance 141.831
 OK27- 2 + varGenes=geneMean       + ngenes=40 perc -   avDistance - 
 
-OK28- 1 + varGenes=dispersion     + ngenes=60 perc   avDistance 
-OK29- 2 + varGenes=dispersion     + ngenes=60 perc   avDistance 
-OK30- 1 + varGenes=geneMean       + ngenes=60 perc   avDistance 
-OK31- 2 + varGenes=geneMean       + ngenes=60 perc   avDistance 
+OK28- 1 + varGenes=dispersion     + ngenes=60 perc  0.00231303 avDistance 140.1847   
+OK29- 2 + varGenes=dispersion     + ngenes=60 perc  0.00154202 avDistance 160.47
+OK30- 1 + varGenes=geneMean       + ngenes=60 perc  0.00154202 avDistance 144.4356
+OK31- 2 + varGenes=geneMean       + ngenes=60 perc  0.00462606 avDistance 149.328
 60 first then 40
 
-II-
-OK32- 8 + varGenes=dispersion     + ngenes=20 perc   avDistance 
-OK33- 9 + varGenes=dispersion     + ngenes=20 perc   avDistance 
-OK34- 8 + varGenes=geneMean       + ngenes=20 perc   avDistance 
-OK35- 9 + varGenes=geneMean       + ngenes=20 perc   avDistance 
+II-GCC instance 2
+OK32- 8 + varGenes=dispersion     + ngenes=20 perc 0.00231303 avDistance 123.989
+OK33- 9 + varGenes=dispersion     + ngenes=20 perc 0.00385505 avDistance 179.8547
+OK34- 8 + varGenes=geneMean       + ngenes=20 perc 0.00077101 avDistance NA
+OK35- 9 + varGenes=geneMean       + ngenes=20 perc 0.00462606 avDistance 178.2285
 
-OK36- 8 + varGenes=dispersion     + ngenes=40 perc   avDistance 
-OK37- 9 + varGenes=dispersion     + ngenes=40 perc   avDistance 
-OK38- 8 + varGenes=geneMean       + ngenes=40 perc   avDistance 
-OK39- 9 + varGenes=geneMean       + ngenes=40 perc   avDistance 
+OK36- 8 + varGenes=dispersion     + ngenes=40 perc 0.00154202 avDistance 134.1286 
+OK37- 9 + varGenes=dispersion     + ngenes=40 perc 0.00308404 avDistance 177.143
+OK38- 8 + varGenes=geneMean       + ngenes=40 perc0.00154202  avDistance NA
+OK39- 9 + varGenes=geneMean       + ngenes=40 perc 0          avDistance 155.9895
 
-OK40- 8 + varGenes=dispersion     + ngenes=60 perc   avDistance 
-OK41- 9 + varGenes=dispersion     + ngenes=60 perc   avDistance 
-OK42- 8 + varGenes=geneMean       + ngenes=60 perc   avDistance 
-OK43- 9 + varGenes=geneMean       + ngenes=60 perc   avDistance 
+OK40- 8 + varGenes=dispersion     + ngenes=60 perc  0.00925212 avDistance 149.206
+OK41- 9 + varGenes=dispersion     + ngenes=60 perc  0.00539707 avDistance 152.1526
+OK42- 8 + varGenes=geneMean       + ngenes=60 perc  0.00077101 avDistance 154.0812
+OK43- 9 + varGenes=geneMean       + ngenes=60 perc  0.00462606 avDistance 155.8634
 
-III-
+III-GCC instance 3
 OK32- 16 + varGenes=dispersion     + ngenes=20 perc   avDistance 
 OK33- 17 + varGenes=dispersion     + ngenes=20 perc   avDistance 
 OK34- 16 + varGenes=geneMean       + ngenes=20 perc   avDistance 
