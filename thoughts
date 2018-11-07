@@ -30,6 +30,7 @@ Tries:
 -> no because I thought it was manual mapping
 #Refined mapping with projection1
 -> score is quite poor
+#fix 3040
 
 Results:
 1-Initial mapping - shape 76*40 - x.low.cutoff = 0.1  - Initial   - bin = Seurat  : perc 0.00308404 avDistance 137.986
@@ -52,21 +53,21 @@ OK16-Initial mapping -  shape 80*38 - x.low.cutoff = 0.1  - Initial  - bin = Seu
 OK17-Refined mapping -  shape 80*38 - x.low.cutoff = 0.1  - refine2,4- bin = Seurat : perc 0.00385505 avDistance 172.7521
 OK18-Initial mapping -  shape 80*38 - x.low.cutoff = 0.1  - Initial  - bin = Distmap: perc 0.00231303 avDistance 140.3986
 OK19-Refined mapping -  shape 80*38 - x.low.cutoff = 0.1  - refine2,4- bin = Distmap: perc 0.00154202 avDistance 163.9205
+
 OK20- 1 + varGenes=dispersion     + ngenes=20 perc 0.00154202  avDistance 123.1461
 OK21- 2 + varGenes=dispersion     + ngenes=20 perc 0.00077101  avDistance 166.6629
 OK22- 1 + varGenes=geneMean       + ngenes=20 perc 0.00231303  avDistance NA
 OK23- 2 + varGenes=geneMean       + ngenes=20 perc 0.00308404  avDistance 189.4284
 
-OK24- 1 + varGenes=dispersion     + ngenes=40 perc 0.00154202  avDistance 133.6976  /2 0.00154202    133.4235
-OK25- 2 + varGenes=dispersion     + ngenes=40 perc 0.00231303  avDistance 147.0048  /2  0.00077101   183.6982
+OK24- 1 + varGenes=dispersion     + ngenes=40 perc 0.00154202  avDistance 133.6976  
+OK25- 2 + varGenes=dispersion     + ngenes=40 perc 0.00231303  avDistance 147.0048
 OK26- 1 + varGenes=geneMean       + ngenes=40 perc 0.00385505  avDistance 141.831 
-OK27- 2 + varGenes=geneMean       + ngenes=40 perc -   avDistance - 
+OK27- 2 + varGenes=geneMean       + ngenes=40 perc 0.00154202  avDistance 166.9773
 
-OK28- 1 + varGenes=dispersion     + ngenes=60 perc  0.00231303 avDistance 140.1847   
-OK29- 2 + varGenes=dispersion     + ngenes=60 perc  0.00154202 avDistance 160.47
+OK28- 1 + varGenes=dispersion     + ngenes=60 perc  0.00154202 avDistance 140.3539   
+OK29- 2 + varGenes=dispersion     + ngenes=60 perc  0.00231303 avDistance 182.8807
 OK30- 1 + varGenes=geneMean       + ngenes=60 perc  0.00154202 avDistance 144.4356
 OK31- 2 + varGenes=geneMean       + ngenes=60 perc  0.00462606 avDistance 149.328
-60 first then 40
 
 II-GCC instance 2
 OK32- 8 + varGenes=dispersion     + ngenes=20 perc 0.00231303 avDistance 123.989
@@ -105,5 +106,5 @@ Submissions:
 2- 20=22 40=26 60=30
 3- 20=32 40=36 60=40
 4- 20=35 40=39 60=43
-5- 20=   40= 60=
+5- 20=44 40=48 60=52
 
